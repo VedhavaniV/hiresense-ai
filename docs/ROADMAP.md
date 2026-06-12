@@ -6,6 +6,7 @@
 - Resume PDF upload.
 - Job description input.
 - Match score.
+- Hybrid skill and semantic scores.
 - Extracted matching skills.
 - Missing skills.
 - Learning roadmap.
@@ -22,6 +23,7 @@
 ## Milestone 3: ML and NLP Upgrade
 
 - Sentence-transformer semantic similarity.
+- Compare transformer scoring against the current lexical semantic baseline.
 - Role-specific scoring weights.
 - Model evaluation dataset.
 - MLflow experiment tracking.

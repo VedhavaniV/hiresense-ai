@@ -5,6 +5,9 @@ import "./styles.css";
 
 type Analysis = {
   score: number;
+  skill_score: number;
+  semantic_score: number;
+  scoring_method: string;
   matched_skills: string[];
   missing_skills: string[];
   resume_skills: string[];
@@ -90,7 +93,7 @@ function App() {
           </div>
 
           <div className="metric-panel">
-            <span className="metric-label">Current Fit</span>
+            <span className="metric-label">Overall Fit</span>
             <strong>{analysis ? `${analysis.score}%` : "--"}</strong>
             <div className="score-track">
               <span style={{ width: `${analysis?.score ?? 0}%` }} />
@@ -152,6 +155,12 @@ function App() {
 
           {error && <div className="error-box">{error}</div>}
 
+          <section className="score-grid">
+            <ScoreCard label="Skill Score" value={analysis?.skill_score} />
+            <ScoreCard label="Semantic Score" value={analysis?.semantic_score} />
+            <ScoreCard label="Overall Score" value={analysis?.score} />
+          </section>
+
           <section className="results-grid" id="skills">
             <ResultPanel
               title="Matched Skills"
@@ -183,6 +192,15 @@ function App() {
         </section>
       </section>
     </main>
+  );
+}
+
+function ScoreCard({ label, value }: { label: string; value?: number }) {
+  return (
+    <article className="score-card">
+      <span>{label}</span>
+      <strong>{value === undefined ? "--" : `${value}%`}</strong>
+    </article>
   );
 }
 

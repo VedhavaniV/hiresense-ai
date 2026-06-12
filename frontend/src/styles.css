@@ -199,20 +199,42 @@ h3 {
 }
 
 .input-grid,
-.results-grid {
+.results-grid,
+.score-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
+.score-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 label,
 .upload-panel,
+.score-card,
 .result-panel,
 .roadmap-panel,
 .error-box {
   border: 1px solid #dce3ea;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.score-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.score-card span {
+  color: #647386;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.score-card strong {
+  font-size: 1.7rem;
 }
 
 .upload-panel {
@@ -329,7 +351,8 @@ textarea:focus {
 @media (max-width: 900px) {
   .workspace,
   .input-grid,
-  .results-grid {
+  .results-grid,
+  .score-grid {
     grid-template-columns: 1fr;
   }
 

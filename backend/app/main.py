@@ -13,6 +13,9 @@ class AnalyzeRequest(BaseModel):
 
 class AnalyzeResponse(BaseModel):
     score: int
+    skill_score: int
+    semantic_score: int
+    scoring_method: str
     matched_skills: list[str]
     missing_skills: list[str]
     resume_skills: list[str]

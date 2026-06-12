@@ -1,6 +1,7 @@
 import unittest
 
 from app.matcher import analyze_match, extract_skills
+from app.semantic_similarity import semantic_similarity_score
 
 
 class SkillExtractionTests(unittest.TestCase):
@@ -23,7 +24,10 @@ class MatchAnalysisTests(unittest.TestCase):
 
         report = analyze_match(resume, job)
 
-        self.assertEqual(report.score, 50)
+        self.assertEqual(report.skill_score, 50)
+        self.assertGreater(report.semantic_score, 0)
+        self.assertEqual(report.score, round((report.skill_score * 0.7) + (report.semantic_score * 0.3)))
+        self.assertEqual(report.scoring_method, "hybrid_skill_overlap_70_semantic_30")
         self.assertEqual(report.matched_skills, ["docker", "python", "sql"])
         self.assertEqual(report.missing_skills, ["aws", "kubernetes", "mlflow"])
         self.assertTrue(report.roadmap)
@@ -34,11 +38,27 @@ class MatchAnalysisTests(unittest.TestCase):
             "We need someone curious, responsible, and energetic.",
         )
 
-        self.assertEqual(report.score, 0)
+        self.assertEqual(report.skill_score, 0)
+        self.assertEqual(report.score, report.semantic_score)
+        self.assertEqual(report.scoring_method, "semantic_only_no_known_job_skills")
         self.assertEqual(report.job_skills, [])
         self.assertTrue(report.roadmap)
 
 
+class SemanticSimilarityTests(unittest.TestCase):
+    def test_scores_related_text_higher_than_unrelated_text(self):
+        related = semantic_similarity_score(
+            "Python SQL machine learning model evaluation",
+            "Python SQL machine learning model evaluation",
+        )
+        unrelated = semantic_similarity_score(
+            "Python SQL machine learning model evaluation",
+            "customer support sales communication",
+        )
+
+        self.assertGreater(related, unrelated)
+        self.assertEqual(related, 100)
+
+
 if __name__ == "__main__":
     unittest.main()
-

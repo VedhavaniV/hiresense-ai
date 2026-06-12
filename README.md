@@ -20,7 +20,8 @@ Most AI portfolio projects stop at notebooks. HireSense AI is built to show real
 - Resume text and job description matching.
 - Resume PDF upload with text extraction.
 - Skill extraction from common AI/data/devops keywords.
-- Match score with overlap analysis.
+- Hybrid match scoring with skill overlap and semantic similarity.
+- Separate skill, semantic, and overall fit scores.
 - Missing skill recommendations.
 - Learning roadmap generation.
 - FastAPI backend endpoint.
@@ -31,6 +32,7 @@ Most AI portfolio projects stop at notebooks. HireSense AI is built to show real
 
 - **Backend:** Python, FastAPI, Pydantic
 - **PDF Processing:** pypdf
+- **NLP Scoring:** lexical semantic similarity baseline, designed for future sentence-transformer upgrade
 - **Frontend:** React, Vite, TypeScript
 - **Testing:** unittest, pytest-compatible structure
 - **DevOps:** Docker, Docker Compose, GitHub Actions
@@ -92,6 +94,19 @@ docker compose up --build
 curl -X POST http://localhost:8000/api/v1/analyze \
   -H "Content-Type: application/json" \
   -d "{\"resume_text\":\"Python SQL FastAPI machine learning Docker\",\"job_description\":\"We need Python, SQL, Docker, Kubernetes, MLflow and AWS.\"}"
+```
+
+Example response:
+
+```json
+{
+  "score": 52,
+  "skill_score": 50,
+  "semantic_score": 57,
+  "scoring_method": "hybrid_skill_overlap_70_semantic_30",
+  "matched_skills": ["docker", "python", "sql"],
+  "missing_skills": ["aws", "kubernetes", "mlflow"]
+}
 ```
 
 ### Analyze a Resume PDF

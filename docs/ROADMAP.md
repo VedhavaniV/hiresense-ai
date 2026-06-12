@@ -3,19 +3,18 @@
 ## Milestone 1: Public MVP
 
 - Resume text input.
+- Resume PDF upload.
 - Job description input.
 - Match score.
 - Extracted matching skills.
 - Missing skills.
 - Learning roadmap.
-- FastAPI endpoint.
+- FastAPI endpoints.
 - React UI.
 - Unit tests and GitHub Actions.
 
 ## Milestone 2: Resume Uploads
 
-- PDF upload.
-- Text extraction.
 - Resume section parsing.
 - Better skill taxonomy.
 - Exportable report.
@@ -42,4 +41,3 @@
 - Monitoring and health checks.
 - CI/CD deployment workflow.
 - Release tags and changelog.
-

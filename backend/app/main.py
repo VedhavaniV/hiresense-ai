@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.matcher import analyze_match
+from app.pdf_parser import PdfExtractionError, extract_text_from_pdf
 
 
 class AnalyzeRequest(BaseModel):
@@ -44,3 +45,23 @@ def analyze(payload: AnalyzeRequest) -> AnalyzeResponse:
     report = analyze_match(payload.resume_text, payload.job_description)
     return AnalyzeResponse(**report.__dict__)
 
+
+@app.post("/api/v1/analyze-resume-file", response_model=AnalyzeResponse)
+async def analyze_resume_file(
+    resume_file: UploadFile = File(...),
+    job_description: str = Form(..., min_length=10),
+) -> AnalyzeResponse:
+    if resume_file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="Only PDF resume uploads are supported.")
+
+    file_bytes = await resume_file.read()
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded PDF is empty.")
+
+    try:
+        resume_text = extract_text_from_pdf(file_bytes)
+    except PdfExtractionError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    report = analyze_match(resume_text, job_description)
+    return AnalyzeResponse(**report.__dict__)

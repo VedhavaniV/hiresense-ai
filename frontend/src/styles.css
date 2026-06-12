@@ -14,6 +14,7 @@ body {
 }
 
 button,
+input,
 textarea {
   font: inherit;
 }
@@ -160,7 +161,8 @@ h3 {
   gap: 16px;
 }
 
-.primary-button {
+.primary-button,
+.secondary-button {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
@@ -173,6 +175,12 @@ h3 {
   color: #ffffff;
   cursor: pointer;
   font-weight: 700;
+}
+
+.secondary-button {
+  border: 1px solid #ccd6df;
+  background: #ffffff;
+  color: #243244;
 }
 
 .primary-button:disabled {
@@ -198,12 +206,33 @@ h3 {
 }
 
 label,
+.upload-panel,
 .result-panel,
 .roadmap-panel,
 .error-box {
   border: 1px solid #dce3ea;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.upload-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+}
+
+.upload-panel p {
+  max-width: 700px;
+  margin: 0;
+  color: #647386;
+  line-height: 1.5;
+}
+
+input[type="file"] {
+  max-width: 260px;
+  color: #243244;
 }
 
 label {
@@ -243,6 +272,11 @@ textarea:focus {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+}
+
+.section-title.compact {
+  justify-content: flex-start;
+  margin-bottom: 6px;
 }
 
 .positive .section-title {
@@ -311,6 +345,15 @@ textarea:focus {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .upload-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  input[type="file"] {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 560px) {
@@ -327,4 +370,3 @@ textarea:focus {
     padding: 18px;
   }
 }
-

@@ -18,6 +18,7 @@ Most AI portfolio projects stop at notebooks. HireSense AI is built to show real
 ## Current Features
 
 - Resume text and job description matching.
+- Resume PDF upload with text extraction.
 - Skill extraction from common AI/data/devops keywords.
 - Match score with overlap analysis.
 - Missing skill recommendations.
@@ -29,6 +30,7 @@ Most AI portfolio projects stop at notebooks. HireSense AI is built to show real
 ## Tech Stack
 
 - **Backend:** Python, FastAPI, Pydantic
+- **PDF Processing:** pypdf
 - **Frontend:** React, Vite, TypeScript
 - **Testing:** unittest, pytest-compatible structure
 - **DevOps:** Docker, Docker Compose, GitHub Actions
@@ -92,6 +94,14 @@ curl -X POST http://localhost:8000/api/v1/analyze \
   -d "{\"resume_text\":\"Python SQL FastAPI machine learning Docker\",\"job_description\":\"We need Python, SQL, Docker, Kubernetes, MLflow and AWS.\"}"
 ```
 
+### Analyze a Resume PDF
+
+```bash
+curl -X POST http://localhost:8000/api/v1/analyze-resume-file \
+  -F "resume_file=@resume.pdf" \
+  -F "job_description=We need Python, SQL, Docker, Kubernetes, MLflow and AWS."
+```
+
 ## Open Source Hosting Plan
 
 This project is intended to be hosted publicly on:
@@ -113,4 +123,3 @@ Contributions, issues, feature ideas, and documentation improvements are welcome
 ## License
 
 MIT License. See [LICENSE](LICENSE).
-

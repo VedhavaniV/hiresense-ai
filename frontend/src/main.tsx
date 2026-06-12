@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowRight, BrainCircuit, CheckCircle2, Github, Loader2, Target, XCircle } from "lucide-react";
+import { ArrowRight, BrainCircuit, CheckCircle2, FileUp, Github, Loader2, Target, XCircle } from "lucide-react";
 import "./styles.css";
 
 type Analysis = {
@@ -19,6 +19,7 @@ const sampleJob = `We are hiring an AI Engineer with Python, SQL, FastAPI, Docke
 function App() {
   const [resumeText, setResumeText] = useState(sampleResume);
   const [jobDescription, setJobDescription] = useState(sampleJob);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,14 +31,11 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/analyze`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resume_text: resumeText, job_description: jobDescription }),
-      });
+      const response = resumeFile ? await analyzeResumeFile() : await analyzeResumeText();
 
       if (!response.ok) {
-        throw new Error("Unable to analyze. Check that the backend is running.");
+        const message = await readErrorMessage(response);
+        throw new Error(message);
       }
 
       const data = (await response.json()) as Analysis;
@@ -46,6 +44,34 @@ function App() {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function analyzeResumeText() {
+    return fetch(`${apiUrl}/api/v1/analyze`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resume_text: resumeText, job_description: jobDescription }),
+    });
+  }
+
+  async function analyzeResumeFile() {
+    const formData = new FormData();
+    formData.append("resume_file", resumeFile as File);
+    formData.append("job_description", jobDescription);
+
+    return fetch(`${apiUrl}/api/v1/analyze-resume-file`, {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  async function readErrorMessage(response: Response) {
+    try {
+      const payload = (await response.json()) as { detail?: string };
+      return payload.detail || "Unable to analyze. Check that the backend is running.";
+    } catch {
+      return "Unable to analyze. Check that the backend is running.";
     }
   }
 
@@ -102,6 +128,26 @@ function App() {
               <span>Job Description</span>
               <textarea value={jobDescription} onChange={(event) => setJobDescription(event.target.value)} />
             </label>
+          </section>
+
+          <section className="upload-panel">
+            <div>
+              <div className="section-title compact">
+                <h3>Resume PDF Upload</h3>
+                <FileUp size={18} aria-hidden="true" />
+              </div>
+              <p>{resumeFile ? resumeFile.name : "Pasted resume text mode"}</p>
+            </div>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(event) => setResumeFile(event.target.files?.[0] ?? null)}
+            />
+            {resumeFile && (
+              <button className="secondary-button" onClick={() => setResumeFile(null)} type="button">
+                Clear PDF
+              </button>
+            )}
           </section>
 
           {error && <div className="error-box">{error}</div>}
@@ -177,4 +223,3 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>,
 );
-

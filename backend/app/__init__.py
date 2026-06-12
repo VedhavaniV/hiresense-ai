@@ -1,0 +1,2 @@
+"""HireSense AI backend package."""
+
